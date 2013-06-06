@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 var simulation = require('./lib/simulation');
 var input = require('./lib/input');
 
