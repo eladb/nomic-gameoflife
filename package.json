@@ -1,0 +1,19 @@
+{
+  "name": "nomic-gameoflife",
+  "version": "0.0.1",
+  "description": "Game of life challange for Nomic",
+  "main": "gameoflife.js",
+  "directories": {
+    "test": "tests"
+  },
+  "dependencies": {
+    "async": "~0.2.9"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "cd test && ./run.sh"
+  },
+  "repository": "",
+  "author": "Elad Ben-Israel",
+  "license": "BSD"
+}
