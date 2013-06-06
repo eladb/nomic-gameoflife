@@ -1,29 +1,58 @@
 #!/usr/bin/env node
+var readline = require('readline');
 var simulation = require('./lib/simulation');
 var input = require('./lib/input');
+var async = require('async');
 
-input(function(err, config) {
+var rl = readline.createInterface({
+  input: process.stdin, 
+  output: process.stdout,
+  terminal: false, // no echo
+});
+
+input(rl, function(err, config) {
   if (err) {
     console.error(err);
     process.exit(1);
   }
 
-  var result = simulation(config);
+  // create simulation object
+  var sim = simulation(config);
 
-  // output
-  print_matrix(result);
+  var interactive = process.argv[2] === '-i';;
+  if (interactive) {
+    return run_interactive(sim, config.iterations);
+  }
+
+  // non interactive (default) mode
+  for (var i = 0; i < config.iterations; ++i) {
+    sim.iterate();
+  }
+
+  sim.write_matrix(process.stdout);
 });
-
 
 // --
 
-function print_matrix(matrix) {
-  matrix.forEach(function(row) {
-    row.forEach(function(col) {
-      process.stdout.write(col.toString());
-      process.stdout.write(' ');
+function run_interactive(sim, iterations) {
+  return async.timesSeries(iterations, function(i, cb) {
+    sim.iterate(); // one iteration
+
+    console.log();
+    console.log('after iteration #' + (i+1) + ':');
+    sim.write_matrix(process.stdout);
+
+    if ((i+1) >= iterations) {
+      return cb(); // done
+    }
+
+    // interactive mode: wait for user
+    return rl.question('enter for next iteration', function() {
+      return cb();
     });
 
-    process.stdout.write('\n');
+    return cb(); // just continue
+  }, function() {
+    process.exit(0);
   });
 }
