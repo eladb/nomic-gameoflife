@@ -1,4 +1,4 @@
-Nomic Game of Life Challange
+# Nomic Game of Life Challange
 
 ## Usage
 
